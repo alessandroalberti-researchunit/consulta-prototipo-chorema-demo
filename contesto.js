@@ -1,9 +1,11 @@
-// Vista "Contesto territoriale": dati Chorema attorno a Piazza Risorgimento. Dati in ./dati/ (generati da export/ con id di tracciabilita' al Demo Builder).
-// Mappa: MapLibre GL (se disponibile e con WebGL) sopra base CARTO Positron; altrimenti mappa SVG.
-const V3_URL = ''; // URL di una pagina pubblica Chorema da incorporare (iframe). Vuoto = card nascosta.
+// Vista Contesto territoriale: dati dell'area attorno a Piazza Risorgimento, in ./dati/.
+// Mappa: MapLibre GL (se disponibile e con WebGL) sopra base OpenFreeMap; altrimenti mappa SVG.
 // Base cartografica: OpenFreeMap (stile Positron, vettoriale, gratuito, senza chiave, uso commerciale ammesso; dati © OpenMapTiles, © OpenStreetMap contributors). Sostituibile con qualsiasi stile MapLibre.
 const STILE_URL = 'https://tiles.openfreemap.org/styles/positron';
 const VER = new URL(import.meta.url).search; // ?v=... del modulo: versiona anche i file dati, evitando JSON vecchi in cache
+const ORIGINE = false; // true mostra badge, fonti e id dei dati; false li nasconde
+const og = s => (ORIGINE ? s : '');
+const senzaFonte = s => s;
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const it = (n, d = 0) => new Intl.NumberFormat('it-IT', { useGrouping: 'always', minimumFractionDigits: d, maximumFractionDigits: d }).format(n);
 const METRICHE = {
@@ -16,7 +18,7 @@ let cache, metrica = 'residenti', selezionata = null, vista3d = false, gl = null
 async function carica() {
   if (cache) return cache;
   const get = f => fetch('./dati/' + f + VER).then(r => { if (!r.ok) throw new Error(f); return r.json(); });
-  const [geo, ctx, punti] = await Promise.all([get('celle_h3.geojson'), get('contesto_chorema.json'), get('punti.json')]);
+  const [geo, ctx, punti] = await Promise.all([get('celle_h3.geojson'), get('contesto_area.json'), get('punti.json')]);
   const estremi = Object.fromEntries(Object.entries(METRICHE).map(([k, m]) => { const v = geo.features.map(f => f.properties[m.key]); return [k, { vmin: Math.min(...v), vmax: Math.max(...v) }]; }));
   return (cache = { geo, ctx, punti, estremi, centro: geo.features.find(f => f.properties.centro).properties.cella });
 }
@@ -121,21 +123,21 @@ function applicaVista(d, anima = true) {
 /* ---------- pannelli ---------- */
 function dettaglio({ geo, centro }) {
   const f = geo.features.find(x => x.properties.cella === (selezionata || centro)), p = f.properties, m = METRICHE[metrica];
-  return '<small class="ov-k">Cella selezionata</small><b>' + it(p[m.key]) + '</b><small>' + m.label + ', ' + m.unit + '</small>' + (m.split ? '<small class="ov-split">fermate bus <b>' + it(p[m.split[0]]) + '</b> · stazioni <b>' + it(p[m.split[1]]) + '</b></small>' : '') + '<small class="ov-id">H3 r8 ' + esc(p.cella) + (p.centro ? ' · contiene Piazza Risorgimento' : '') + '<br>valore di cella, circa 0,8 km² · id ' + esc(p[m.id]) + '</small>';
+  return '<small class="ov-k">Cella selezionata</small><b>' + it(p[m.key]) + '</b><small>' + m.label + ', ' + m.unit + '</small>' + (m.split ? '<small class="ov-split">fermate bus <b>' + it(p[m.split[0]]) + '</b> · stazioni <b>' + it(p[m.split[1]]) + '</b></small>' : '') + '<small class="ov-id">H3 r8 ' + esc(p.cella) + (p.centro ? ' · contiene Piazza Risorgimento' : '') + '<br>valore di cella, circa 0,8 km²' + og(' · id ' + esc(p[m.id])) + '</small>';
 }
 function legenda({ estremi }) {
   const m = METRICHE[metrica], e = estremi[metrica];
   return '<span>' + it(e.vmin) + '</span><i style="background:linear-gradient(90deg,' + m.rampa.join(',') + ')"></i><span>' + it(e.vmax) + '</span><span>· i tre punti cadono nella stessa cella; posizioni di Via e Accesso Ottaviano stimate</span>';
 }
 function schede({ ctx }) {
-  return ctx.schede.map(s => '<div class="sheet-item"><h3>' + esc(s.titolo) + '</h3><span class="badge chorema">Chorema</span><p>' + esc(s.valore) + '</p><small>' + esc(s.id) + ' · verificato il ' + esc(s.data_verifica) + '</small></div>').join('');
+  return ctx.schede.map(s => '<div class="sheet-item"><h3>' + esc(s.titolo) + '</h3><p>' + esc(s.valore) + '</p><small>' + esc(s.id) + ' · verificato il ' + esc(s.data_verifica) + '</small></div>').join('');
 }
-const cardHead = (t, s) => '<div class="card-head"><div><h2>' + t + '</h2><p>' + s + '</p></div><span class="badge chorema">Chorema</span></div>';
+const cardHead = (t, s) => '<div class="card-head"><div><h2>' + t + '</h2><p>' + s + '</p></div>' + og('') + '</div>';
 const seg = (nome, attr, voci, attivo) => '<div class="seg" role="group" aria-label="' + nome + '">' + voci.map(([k, l]) => '<button ' + attr + '="' + k + '" aria-pressed="' + (k === attivo) + '">' + l + '</button>').join('') + '</div>';
 
 function aPiedi({ ctx }) {
   return '<div class="pd-key"><span><i class="k15"></i>a 15 minuti</span><span><i class="k30"></i>a 30 minuti</span></div>' + ctx.numeri.a_piedi.map(r =>
-    '<div class="pd-row" title="' + esc(r.nota) + '"><div class="pd-lab"><b>' + esc(r.voce) + '</b><small>' + esc(r.id) + '</small></div><div class="pd-num">' + it(r.m15) + '</div>' +
+    '<div class="pd-row" title="' + esc(r.nota) + '"><div class="pd-lab"><b>' + esc(r.voce) + '</b>' + og('<small>' + esc(r.id) + '</small>') + '</div><div class="pd-num">' + it(r.m15) + '</div>' +
     '<div class="pd-bars"><span class="pd-30"></span><span class="pd-15" style="width:' + (100 * r.m15 / r.m30).toFixed(1) + '%"></span></div><div class="pd-30n">' + it(r.m30) + '</div></div>').join('');
 }
 function caldoAria({ ctx }) {
@@ -143,9 +145,9 @@ function caldoAria({ ctx }) {
   const caldo = n.caldo.map(c => '<div class="stat"><b>' + it(c.valore, 1) + '</b><span>' + esc(c.unita) + '</span><small>' + esc(c.voce) + '</small></div>').join('');
   const mx = Math.max(...n.aria.map(a => a.valore / a.oms)) * 1.12; // lunghezza della barra = multiplo del limite OMS
   const aria = n.aria.map(a => { return '<div class="aq-row"><span class="aq-lab">' + esc(a.voce) + '</span><div class="aq-track"><i style="width:' + (100 * a.valore / a.oms / mx).toFixed(1) + '%"></i><u style="left:' + (100 / mx).toFixed(1) + '%" title="Limite OMS 2021: ' + it(a.oms) + ' µg/m³"></u></div><span class="aq-val">' + it(a.valore, 1) + ' <small>µg/m³</small></span><span class="aq-x">×' + it(a.rapporto_oms, 1) + ' il limite OMS</span></div>'; }).join('');
-  return '<h3 class="sub">Caldo <small>' + esc(n.caldo_fonte) + ' · ' + esc(n.caldo_id) + '</small></h3><div class="stats">' + caldo + '</div>' +
-    '<h3 class="sub">Aria <small>' + esc(n.aria_fonte) + ' · ' + esc(n.aria_id) + ' · la barra è il multiplo del limite OMS, la linea è il limite</small></h3>' + aria +
-    '<p class="verde">Verde urbano <b>' + it(n.verde.verde_urbano_pct, 1) + '%</b> · tessuto urbano <b>' + it(n.verde.tessuto_urbano_pct, 1) + '%</b> nell’area di 5 km <small>' + esc(n.verde.id) + '</small></p>';
+  return '<h3 class="sub">Caldo <small>' + esc(senzaFonte(n.caldo_fonte)) + og(' · ' + esc(n.caldo_id)) + '</small></h3><div class="stats">' + caldo + '</div>' +
+    '<h3 class="sub">Aria <small>' + esc(senzaFonte(n.aria_fonte)) + og(' · ' + esc(n.aria_id)) + ' · la barra è il multiplo del limite OMS, la linea è il limite</small></h3>' + aria +
+    '<p class="verde">Verde urbano <b>' + it(n.verde.verde_urbano_pct, 1) + '%</b> · tessuto urbano <b>' + it(n.verde.tessuto_urbano_pct, 1) + '%</b> nell’area di 5 km' + og(' <small>' + esc(n.verde.id) + '</small>') + '</p>';
 }
 const COL_SSP = { 'SSP2-4.5': '#328170', 'SSP5-8.5': '#6422E8' };
 function climaSvg({ ctx }) {
@@ -159,7 +161,7 @@ function climaSvg({ ctx }) {
   Object.entries(c.serie).forEach(([nome, s], j) => {
     const col = COL_SSP[nome], pts = s[k].map((v, i) => x(i).toFixed(1) + ',' + y(v).toFixed(1));
     g += '<path d="M' + pts.join('L') + '" fill="none" stroke="' + col + '" stroke-width="2.6" stroke-linejoin="round"/>';
-    s[k].forEach((v, i) => { g += '<circle cx="' + x(i).toFixed(1) + '" cy="' + y(v).toFixed(1) + '" r="4.5" fill="#fff" stroke="' + col + '" stroke-width="2.4"><title>' + esc(nome) + ' ' + c.periodi[i] + ': ' + it(v, dec) + ' (' + esc(s.id[i]) + ')</title></circle><text class="vl" x="' + x(i).toFixed(1) + '" y="' + (y(v) + (j === 0 ? 20 : -11)).toFixed(1) + '" text-anchor="middle" fill="' + col + '">' + (k === 'dT' ? '+' : '') + it(v, dec) + '</text>'; });
+    s[k].forEach((v, i) => { g += '<circle cx="' + x(i).toFixed(1) + '" cy="' + y(v).toFixed(1) + '" r="4.5" fill="#fff" stroke="' + col + '" stroke-width="2.4"><title>' + esc(nome) + ' ' + c.periodi[i] + ': ' + it(v, dec) + og(' (' + esc(s.id[i]) + ')') + '</title></circle><text class="vl" x="' + x(i).toFixed(1) + '" y="' + (y(v) + (j === 0 ? 20 : -11)).toFixed(1) + '" text-anchor="middle" fill="' + col + '">' + (k === 'dT' ? '+' : '') + it(v, dec) + '</text>'; });
   });
   return '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Proiezioni climatiche per scenario">' + g + '</svg>';
 }
@@ -168,14 +170,14 @@ function clima(d) {
   return '<div class="clima-tools">' + seg('Grandezza', 'data-clima', [['dT', 'Aumento di temperatura (°C)'], ['mesi', 'Mesi/anno con Tmax sopra 35 °C']], climaMetrica) +
     '<span class="clima-key">' + Object.keys(c.serie).map(n => '<span><i style="background:' + COL_SSP[n] + '"></i>' + esc(n) + '</span>').join('') + '</span></div>' +
     '<div class="clima-chart" id="clima-chart">' + climaSvg(d) + '</div>' +
-    '<p class="note">Modello ' + esc(c.modello) + ', variazione rispetto al ' + esc(c.riferimento) + ' (media di riferimento ' + it(c.baseline_temperatura_media_c, 1) + ' °C, ' + esc(c.baseline_id) + '). I mesi con Tmax sopra 35 °C sono una definizione diversa dai giorni di caldo nella card accanto.</p>';
+    '<p class="note">' + 'Variazione' + ' rispetto al ' + esc(c.riferimento) + ' (media di riferimento ' + it(c.baseline_temperatura_media_c, 1) + ' °C' + og(', ' + esc(c.baseline_id)) + '). I mesi con Tmax sopra 35 °C sono una definizione diversa dai giorni di caldo nella card accanto.</p>';
 }
 function rioni({ ctx }) {
   const r = ctx.rioni, max = Math.max(...Object.values(r).map(x => x.residenti_1991));
   return Object.entries(r).map(([n, x]) => '<div class="rr"><div class="rr-top"><b>' + esc(n) + '</b><span class="chip">' + it(x.variazione_1991_2021_pct, 2) + '%</span></div>' +
     '<div class="rr-bar"><i class="a" style="width:' + (100 * x.residenti_1991 / max).toFixed(1) + '%"></i></div><div class="rr-bar"><i class="b" style="width:' + (100 * x.residenti_2021 / max).toFixed(1) + '%"></i></div>' +
     '<div class="rr-num"><span>1991: ' + it(x.residenti_1991) + '</span><span>2021: ' + it(x.residenti_2021) + '</span></div></div>').join('') +
-    '<p class="note">Somma delle celle H3 del rione (' + Object.values(r).map(x => x.id.r91 + ' ' + x.id.r21).join(', ') + '); la variazione è calcolata.</p>';
+    '<p class="note">Somma delle celle H3 del rione' + og(' (' + Object.values(r).map(x => x.id.r91 + ' ' + x.id.r21).join(', ') + ')') + '; la variazione è calcolata.</p>';
 }
 
 function confrontoRioni({ ctx, geo }) {
@@ -188,7 +190,7 @@ function confrontoRioni({ ctx, geo }) {
   return pan.map(p => {
     const vals = nomi.map(n => p.v(r[n])), mx = Math.max(...vals.filter(Number.isFinite), p.rif || 0) * 1.08;
     const righe = nomi.map((n, i) => '<div class="cr-row"><span>' + esc(n) + '</span><div class="cr-track"><i style="width:' + (Number.isFinite(vals[i]) ? 100 * vals[i] / mx : 0).toFixed(1) + '%;background:' + p.col + '"></i>' + (p.rif ? '<u style="left:' + (100 * p.rif / mx).toFixed(1) + '%" title="Cella della piazza: ' + it(p.rif) + '"></u>' : '') + '</div><b>' + (Number.isFinite(vals[i]) ? it(vals[i], p.dec) : 'n.d.') + '</b></div>').join('');
-    return '<div class="cr"><h3>' + p.t + ' <small>' + p.b + '</small></h3>' + righe + '<p class="note">' + (p.rif ? 'La linea è la cella della piazza (' + it(p.rif) + '). ' : 'Non confrontabile con la cella della piazza. ') + esc(nomi.map(n => r[n].id[p.k]).join(' ')) + '</p></div>';
+    return '<div class="cr"><h3>' + p.t + ' <small>' + p.b + '</small></h3>' + righe + '<p class="note">' + (p.rif ? 'La linea è la cella della piazza (' + it(p.rif) + '). ' : 'Non confrontabile con la cella della piazza. ') + og(esc(nomi.map(n => r[n].id[p.k]).join(' '))) + '</p></div>';
   }).join('');
 }
 
@@ -205,10 +207,8 @@ function disegna(el, d) {
     '<article class="card">' + cardHead('Il clima che verrà', 'Due scenari climatici, quattro periodi') + '<div class="cl">' + clima(d) + '</div></article>' +
     '<article class="card">' + cardHead('Residenti nei rioni', 'Prati, Borgo e Trevi, 1991 e 2021') + '<div class="rr-wrap">' + rioni(d) + '</div></article></div>' +
     '<article class="card" style="margin-bottom:18px">' + cardHead('Confronto tra rioni', 'Gli indicatori della mappa per Prati, Borgo e Trevi') + '<div class="cmp">' + confrontoRioni(d) + '</div><p class="note cmp-note">I residenti sono il totale del rione; ricettività e trasporti sono la media per cella H3. Per Borgo i valori coincidono con quelli di una sola cella (881e805051fffff).</p></article>' +
-    '<details class="all-values"><summary>Tutti i valori con id e data di verifica</summary><div class="sheet">' + schede(d) + '</div></details>' +
-    (V3_URL ? '<article class="card" style="margin-top:18px"><div class="card-head"><div><h2>Studio completo Chorema v3</h2><p>Pagina pubblica incorporata, con mappe e fonti</p></div><span class="badge chorema">Chorema v3</span></div><details class="v3-note"><summary>Apri lo studio incorporato</summary><iframe class="v3-frame" title="Studio Chorema v3" loading="lazy" data-src="' + V3_URL + '"></iframe></details></article>' : '') +
-    '<div class="method-callout">I dati di questa vista sono Chorema (ISTAT, CLC, OvertureMaps, ERA5, CAMS, CMIP6), riaggregati su griglia H3: descrivono il contesto, non i flussi. I flussi del cruscotto restano simulati.</div>';
-  el.querySelector('.v3-note')?.addEventListener('toggle', e => { const f = e.target.querySelector('iframe'); if (e.target.open && !f.src) f.src = f.dataset.src; });
+    og('<details class="all-values"><summary>Tutti i valori con id e data di verifica</summary><div class="sheet">' + schede(d) + '</div></details>') +
+    '<div class="method-callout">' + 'I dati di questa vista descrivono il contesto dell’area, riaggregati su griglia H3. I flussi del cruscotto restano simulati.' + '</div>';
   if (g) { el.querySelector('#sel-cella').value = selezionata || d.centro; try { iniziaMappa(d); } catch (e) { gl = null; } }
 }
 
@@ -221,9 +221,9 @@ function scegli(d, cella) {
 
 export async function renderContesto(el, ancora = () => true) {
   if (gl) { gl.remove(); gl = null; }
-  el.innerHTML = '<div class="card" style="padding:24px">Caricamento dei dati Chorema…</div>';
+  el.innerHTML = '<div class="card" style="padding:24px">Caricamento dei dati…</div>';
   let d;
-  try { d = await carica(); } catch (e) { if (!ancora()) return; el.innerHTML = '<div class="method-callout">Dati Chorema non caricati (' + esc(e.message) + '). Servire la cartella con un server statico, non con file://.</div>'; return; }
+  try { d = await carica(); } catch (e) { if (!ancora()) return; el.innerHTML = '<div class="method-callout">Dati non caricati (' + esc(e.message) + '). Servire la cartella con un server statico, non con file://.</div>'; return; }
   if (!ancora()) return; // l'utente ha cambiato vista durante il caricamento
   disegna(el, d);
   const aggiornaSeg = (attr, val) => el.querySelectorAll('[' + attr + ']').forEach(b => b.setAttribute('aria-pressed', String(b.getAttribute(attr) === val)));

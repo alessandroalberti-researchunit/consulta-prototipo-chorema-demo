@@ -1,0 +1,215 @@
+{
+ "rioni": {
+  "Prati": {
+   "residenti_1991": 26916.5217,
+   "residenti_2021": 19946.3367,
+   "variazione_1991_2021_pct": -25.9,
+   "ricettive_15min_media_per_cella": 903.7019,
+   "trasporti_15min_media_per_cella": 121.2584,
+   "cultura_15min_media_per_cella": 176.5706,
+   "no2_ug_m3": 27.399,
+   "id": {
+    "r91": "",
+    "r21": "",
+    "ric": "",
+    "tr": "",
+    "cul": "",
+    "no2": ""
+   }
+  },
+  "Borgo": {
+   "residenti_1991": 6055.777,
+   "residenti_2021": 4715.6704,
+   "variazione_1991_2021_pct": -22.13,
+   "ricettive_15min_media_per_cella": 601.0,
+   "trasporti_15min_media_per_cella": 65.0,
+   "cultura_15min_media_per_cella": 162.0,
+   "no2_ug_m3": 27.392,
+   "id": {
+    "r91": "",
+    "r21": "",
+    "ric": "",
+    "tr": "",
+    "cul": "",
+    "no2": ""
+   }
+  },
+  "Trevi": {
+   "residenti_1991": 8800.2791,
+   "residenti_2021": 6741.9845,
+   "variazione_1991_2021_pct": -23.39,
+   "ricettive_15min_media_per_cella": 1060.5725,
+   "trasporti_15min_media_per_cella": 90.3883,
+   "cultura_15min_media_per_cella": 295.6609,
+   "no2_ug_m3": 27.878,
+   "id": {
+    "r91": "",
+    "r21": "",
+    "ric": "",
+    "tr": "",
+    "cul": "",
+    "no2": ""
+   }
+  }
+ },
+ "schede": [],
+ "numeri": {
+  "a_piedi": [
+   {
+    "voce": "Strutture ricettive",
+    "m15": 879,
+    "m30": 2007,
+    "id": "",
+    "data": "",
+    "nota": "a 15 min: 365 alberghiere e 514 extra-alberghiere"
+   },
+   {
+    "voce": "Luoghi culturali",
+    "m15": 155,
+    "m30": 518,
+    "id": "",
+    "data": "",
+    "nota": "a 15 min: 79 musei; a 30 min: 300 musei"
+   },
+   {
+    "voce": "Patrimonio storico e culto",
+    "m15": 151,
+    "m30": 547,
+    "id": "",
+    "data": "",
+    "nota": ""
+   },
+   {
+    "voce": "Ristorazione",
+    "m15": 920,
+    "m30": 2343,
+    "id": "",
+    "data": "",
+    "nota": "a 15 min: 622 ristoranti e 285 bar"
+   },
+   {
+    "voce": "Fermate bus",
+    "m15": 131,
+    "m30": 331,
+    "id": "",
+    "data": "",
+    "nota": "a 30 min anche 5 stazioni ferroviarie"
+   },
+   {
+    "voce": "Farmacie",
+    "m15": 29,
+    "m30": 60,
+    "id": "",
+    "data": "",
+    "nota": ""
+   }
+  ],
+  "caldo": [
+   {
+    "voce": "Giorni in ondata di calore",
+    "valore": 13.6,
+    "unita": "giorni/anno"
+   },
+   {
+    "voce": "Giorni con Tmax sopra 35 °C",
+    "valore": 3.2,
+    "unita": "giorni/anno"
+   },
+   {
+    "voce": "Notti tropicali",
+    "valore": 52.5,
+    "unita": "notti/anno"
+   }
+  ],
+  "caldo_id": "",
+  "caldo_fonte": "2013-2022, area di 5 km",
+  "caldo_data": "",
+  "aria": [
+   {
+    "voce": "PM2.5",
+    "valore": 13.6,
+    "oms": 5,
+    "unita": "µg/m³",
+    "rapporto_oms": 2.7
+   },
+   {
+    "voce": "PM10",
+    "valore": 19.8,
+    "oms": 15,
+    "unita": "µg/m³",
+    "rapporto_oms": 1.3
+   },
+   {
+    "voce": "NO2",
+    "valore": 26.2,
+    "oms": 10,
+    "unita": "µg/m³",
+    "rapporto_oms": 2.6
+   }
+  ],
+  "aria_id": "",
+  "aria_fonte": "2013-2022, area di 5 km; limiti OMS 2021",
+  "aria_data": "",
+  "verde": {
+   "verde_urbano_pct": 15.7,
+   "tessuto_urbano_pct": 69.2,
+   "id": "",
+   "data": ""
+  },
+  "clima": {
+   "modello": "",
+   "riferimento": "1991-2020",
+   "baseline_temperatura_media_c": 15.9,
+   "baseline_id": "",
+   "periodi": [
+    "2021-2040",
+    "2041-2060",
+    "2061-2080",
+    "2081-2100"
+   ],
+   "serie": {
+    "SSP2-4.5": {
+     "dT": [
+      1.3,
+      2.4,
+      3.0,
+      3.5
+     ],
+     "mesi": [
+      0.2,
+      0.8,
+      1.37,
+      1.63
+     ],
+     "id": [
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    "SSP5-8.5": {
+     "dT": [
+      1.4,
+      2.4,
+      4.1,
+      6.0
+     ],
+     "mesi": [
+      0.23,
+      0.87,
+      1.93,
+      3.47
+     ],
+     "id": [
+      "",
+      "",
+      "",
+      ""
+     ]
+    }
+   }
+  }
+ },
+ "variazione_cella_2001_2021_pct": -10.48
+}
