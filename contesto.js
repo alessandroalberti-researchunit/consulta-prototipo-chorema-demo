@@ -3,6 +3,7 @@
 const V3_URL = ''; // URL di una pagina pubblica Chorema da incorporare (iframe). Vuoto = card nascosta.
 // Base cartografica: OpenFreeMap (stile Positron, vettoriale, gratuito, senza chiave, uso commerciale ammesso; dati © OpenMapTiles, © OpenStreetMap contributors). Sostituibile con qualsiasi stile MapLibre.
 const STILE_URL = 'https://tiles.openfreemap.org/styles/positron';
+const VER = new URL(import.meta.url).search; // ?v=... del modulo: versiona anche i file dati, evitando JSON vecchi in cache
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const it = (n, d = 0) => new Intl.NumberFormat('it-IT', { useGrouping: 'always', minimumFractionDigits: d, maximumFractionDigits: d }).format(n);
 const METRICHE = {
@@ -14,7 +15,7 @@ let cache, metrica = 'residenti', selezionata = null, vista3d = false, gl = null
 
 async function carica() {
   if (cache) return cache;
-  const get = f => fetch('./dati/' + f).then(r => { if (!r.ok) throw new Error(f); return r.json(); });
+  const get = f => fetch('./dati/' + f + VER).then(r => { if (!r.ok) throw new Error(f); return r.json(); });
   const [geo, ctx, punti] = await Promise.all([get('celle_h3.geojson'), get('contesto_chorema.json'), get('punti.json')]);
   const estremi = Object.fromEntries(Object.entries(METRICHE).map(([k, m]) => { const v = geo.features.map(f => f.properties[m.key]); return [k, { vmin: Math.min(...v), vmax: Math.max(...v) }]; }));
   return (cache = { geo, ctx, punti, estremi, centro: geo.features.find(f => f.properties.centro).properties.cella });
@@ -185,8 +186,8 @@ function confrontoRioni({ ctx, geo }) {
     { t: 'Trasporti a 15 min', b: 'media per cella', v: x => x.trasporti_15min_media_per_cella, k: 'tr', col: '#B7791F', rif: c.trasporti_15min, dec: 1 }
   ];
   return pan.map(p => {
-    const vals = nomi.map(n => p.v(r[n])), mx = Math.max(...vals, p.rif || 0) * 1.08;
-    const righe = nomi.map((n, i) => '<div class="cr-row"><span>' + esc(n) + '</span><div class="cr-track"><i style="width:' + (100 * vals[i] / mx).toFixed(1) + '%;background:' + p.col + '"></i>' + (p.rif ? '<u style="left:' + (100 * p.rif / mx).toFixed(1) + '%" title="Cella della piazza: ' + it(p.rif) + '"></u>' : '') + '</div><b>' + it(vals[i], p.dec) + '</b></div>').join('');
+    const vals = nomi.map(n => p.v(r[n])), mx = Math.max(...vals.filter(Number.isFinite), p.rif || 0) * 1.08;
+    const righe = nomi.map((n, i) => '<div class="cr-row"><span>' + esc(n) + '</span><div class="cr-track"><i style="width:' + (Number.isFinite(vals[i]) ? 100 * vals[i] / mx : 0).toFixed(1) + '%;background:' + p.col + '"></i>' + (p.rif ? '<u style="left:' + (100 * p.rif / mx).toFixed(1) + '%" title="Cella della piazza: ' + it(p.rif) + '"></u>' : '') + '</div><b>' + (Number.isFinite(vals[i]) ? it(vals[i], p.dec) : 'n.d.') + '</b></div>').join('');
     return '<div class="cr"><h3>' + p.t + ' <small>' + p.b + '</small></h3>' + righe + '<p class="note">' + (p.rif ? 'La linea è la cella della piazza (' + it(p.rif) + '). ' : 'Non confrontabile con la cella della piazza. ') + esc(nomi.map(n => r[n].id[p.k]).join(' ')) + '</p></div>';
   }).join('');
 }
