@@ -1,6 +1,6 @@
 import {POINTS,SCENARIOS,RANGES,THRESHOLD,records,metrics,hourly,time,it,exportRows} from './data.js';
 import {installEnhancements} from './enhancements.js';
-import {renderContesto} from './contesto.js?v=2026-11-26d';
+import {renderContesto} from './contesto.js?v=2026-11-26e';
 const $=s=>document.querySelector(s);
 const state={point:'piazza',scenario:'ordinaria',range:'giornata',view:['area','dinamiche','programmazione','contesto'].includes(location.hash.slice(1))?location.hash.slice(1):'area'};
 const titles={area:['La fruizione dell’area, nel tempo','Evidenze locali per programmare le iniziative del Turismo.'],dinamiche:['Come si distribuiscono i flussi','Concentrazioni e direttrici nei punti osservati del pilota.'],contesto:['Il contesto territoriale dell’area','Dati Chorema attorno a Piazza Risorgimento: popolazione, ricettività, clima e aria.'],programmazione:['Evidenze per la programmazione','Confrontare giornate e condizioni per orientare le iniziative del Turismo.']};

@@ -7,7 +7,8 @@ const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;'
 const it = (n, d = 0) => new Intl.NumberFormat('it-IT', { minimumFractionDigits: d, maximumFractionDigits: d }).format(n);
 const METRICHE = {
   residenti: { label: 'Residenti 2021', key: 'residenti_2021', id: 'id_residenti', unit: 'abitanti per cella', lo: [236, 236, 255], hi: [84, 27, 198], rampa: ['#ECECFF', '#8E7DF6', '#541BC6'] },
-  ricettive: { label: 'Ricettività a 15 min', key: 'ricettive_15min', id: 'id_ricettive', unit: 'strutture raggiungibili a piedi in 15 min', lo: [224, 249, 241], hi: [24, 72, 62], rampa: ['#E0F9F1', '#5CE0C3', '#18483E'] }
+  ricettive: { label: 'Ricettività a 15 min', key: 'ricettive_15min', id: 'id_ricettive', unit: 'strutture raggiungibili a piedi in 15 min', lo: [224, 249, 241], hi: [24, 72, 62], rampa: ['#E0F9F1', '#5CE0C3', '#18483E'] },
+  trasporti: { label: 'Trasporti a 15 min', key: 'trasporti_15min', id: 'id_trasporti', unit: 'fermate bus e stazioni raggiungibili a piedi in 15 min', lo: [255, 244, 214], hi: [138, 90, 0], rampa: ['#FFF4D6', '#F0B429', '#8A5A00'], split: ['bus_15min', 'stazioni_15min'] }
 };
 let cache, metrica = 'residenti', selezionata = null, vista3d = false, gl = null, climaMetrica = 'dT';
 
@@ -119,7 +120,7 @@ function applicaVista(d, anima = true) {
 /* ---------- pannelli ---------- */
 function dettaglio({ geo, centro }) {
   const f = geo.features.find(x => x.properties.cella === (selezionata || centro)), p = f.properties, m = METRICHE[metrica];
-  return '<small class="ov-k">Cella selezionata</small><b>' + it(p[m.key]) + '</b><small>' + m.label + ', ' + m.unit + '</small><small class="ov-id">H3 r8 ' + esc(p.cella) + (p.centro ? ' · contiene Piazza Risorgimento' : '') + '<br>valore di cella, circa 0,8 km² · id ' + esc(p[m.id]) + '</small>';
+  return '<small class="ov-k">Cella selezionata</small><b>' + it(p[m.key]) + '</b><small>' + m.label + ', ' + m.unit + '</small>' + (m.split ? '<small class="ov-split">fermate bus <b>' + it(p[m.split[0]]) + '</b> · stazioni <b>' + it(p[m.split[1]]) + '</b></small>' : '') + '<small class="ov-id">H3 r8 ' + esc(p.cella) + (p.centro ? ' · contiene Piazza Risorgimento' : '') + '<br>valore di cella, circa 0,8 km² · id ' + esc(p[m.id]) + '</small>';
 }
 function legenda({ estremi }) {
   const m = METRICHE[metrica], e = estremi[metrica];

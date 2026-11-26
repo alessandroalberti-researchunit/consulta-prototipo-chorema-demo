@@ -10,6 +10,10 @@
     "ricettive_15min": 879,
     "id_residenti": "D6",
     "id_ricettive": "D1",
+    "trasporti_15min": 131,
+    "bus_15min": 131,
+    "stazioni_15min": 0,
+    "id_trasporti": "D87",
     "centro": true
    },
    "geometry": {
@@ -60,6 +64,10 @@
     "ricettive_15min": 448,
     "id_residenti": "D45",
     "id_ricettive": "D44",
+    "trasporti_15min": 100,
+    "bus_15min": 98,
+    "stazioni_15min": 2,
+    "id_trasporti": "D88",
     "centro": false
    },
    "geometry": {
@@ -110,6 +118,10 @@
     "ricettive_15min": 601,
     "id_residenti": "D47",
     "id_ricettive": "D46",
+    "trasporti_15min": 65,
+    "bus_15min": 64,
+    "stazioni_15min": 1,
+    "id_trasporti": "D89",
     "centro": false
    },
    "geometry": {
@@ -160,6 +172,10 @@
     "ricettive_15min": 265,
     "id_residenti": "D49",
     "id_ricettive": "D48",
+    "trasporti_15min": 24,
+    "bus_15min": 23,
+    "stazioni_15min": 1,
+    "id_trasporti": "D90",
     "centro": false
    },
    "geometry": {
@@ -210,6 +226,10 @@
     "ricettive_15min": 455,
     "id_residenti": "D51",
     "id_ricettive": "D50",
+    "trasporti_15min": 102,
+    "bus_15min": 102,
+    "stazioni_15min": 0,
+    "id_trasporti": "D104",
     "centro": false
    },
    "geometry": {
@@ -260,6 +280,10 @@
     "ricettive_15min": 950,
     "id_residenti": "D53",
     "id_ricettive": "D52",
+    "trasporti_15min": 103,
+    "bus_15min": 102,
+    "stazioni_15min": 1,
+    "id_trasporti": "D91",
     "centro": false
    },
    "geometry": {
@@ -310,6 +334,10 @@
     "ricettive_15min": 50,
     "id_residenti": "D55",
     "id_ricettive": "D54",
+    "trasporti_15min": 40,
+    "bus_15min": 39,
+    "stazioni_15min": 1,
+    "id_trasporti": "D92",
     "centro": false
    },
    "geometry": {
@@ -360,6 +388,10 @@
     "ricettive_15min": 296,
     "id_residenti": "D57",
     "id_ricettive": "D56",
+    "trasporti_15min": 89,
+    "bus_15min": 89,
+    "stazioni_15min": 0,
+    "id_trasporti": "D93",
     "centro": false
    },
    "geometry": {
@@ -410,6 +442,10 @@
     "ricettive_15min": 138,
     "id_residenti": "D59",
     "id_ricettive": "D58",
+    "trasporti_15min": 54,
+    "bus_15min": 53,
+    "stazioni_15min": 1,
+    "id_trasporti": "D94",
     "centro": false
    },
    "geometry": {
@@ -460,6 +496,10 @@
     "ricettive_15min": 31,
     "id_residenti": "D61",
     "id_ricettive": "D60",
+    "trasporti_15min": 29,
+    "bus_15min": 28,
+    "stazioni_15min": 1,
+    "id_trasporti": "D95",
     "centro": false
    },
    "geometry": {
@@ -510,6 +550,10 @@
     "ricettive_15min": 246,
     "id_residenti": "D63",
     "id_ricettive": "D62",
+    "trasporti_15min": 37,
+    "bus_15min": 35,
+    "stazioni_15min": 2,
+    "id_trasporti": "D103",
     "centro": false
    },
    "geometry": {
@@ -560,6 +604,10 @@
     "ricettive_15min": 291,
     "id_residenti": "D65",
     "id_ricettive": "D64",
+    "trasporti_15min": 86,
+    "bus_15min": 84,
+    "stazioni_15min": 2,
+    "id_trasporti": "D96",
     "centro": false
    },
    "geometry": {
@@ -610,6 +658,10 @@
     "ricettive_15min": 875,
     "id_residenti": "D67",
     "id_ricettive": "D66",
+    "trasporti_15min": 98,
+    "bus_15min": 98,
+    "stazioni_15min": 0,
+    "id_trasporti": "D97",
     "centro": false
    },
    "geometry": {
@@ -660,6 +712,10 @@
     "ricettive_15min": 326,
     "id_residenti": "D69",
     "id_ricettive": "D68",
+    "trasporti_15min": 41,
+    "bus_15min": 41,
+    "stazioni_15min": 0,
+    "id_trasporti": "D98",
     "centro": false
    },
    "geometry": {
@@ -710,6 +766,10 @@
     "ricettive_15min": 302,
     "id_residenti": "D71",
     "id_ricettive": "D70",
+    "trasporti_15min": 37,
+    "bus_15min": 36,
+    "stazioni_15min": 1,
+    "id_trasporti": "D105",
     "centro": false
    },
    "geometry": {
@@ -760,6 +820,10 @@
     "ricettive_15min": 963,
     "id_residenti": "D73",
     "id_ricettive": "D72",
+    "trasporti_15min": 80,
+    "bus_15min": 79,
+    "stazioni_15min": 1,
+    "id_trasporti": "D99",
     "centro": false
    },
    "geometry": {
@@ -810,6 +874,10 @@
     "ricettive_15min": 30,
     "id_residenti": "D75",
     "id_ricettive": "D74",
+    "trasporti_15min": 33,
+    "bus_15min": 32,
+    "stazioni_15min": 1,
+    "id_trasporti": "D100",
     "centro": false
    },
    "geometry": {
@@ -860,6 +928,10 @@
     "ricettive_15min": 37,
     "id_residenti": "D77",
     "id_ricettive": "D76",
+    "trasporti_15min": 37,
+    "bus_15min": 37,
+    "stazioni_15min": 0,
+    "id_trasporti": "D101",
     "centro": false
    },
    "geometry": {
@@ -910,6 +982,10 @@
     "ricettive_15min": 14,
     "id_residenti": "D79",
     "id_ricettive": "D78",
+    "trasporti_15min": 11,
+    "bus_15min": 11,
+    "stazioni_15min": 0,
+    "id_trasporti": "D102",
     "centro": false
    },
    "geometry": {
