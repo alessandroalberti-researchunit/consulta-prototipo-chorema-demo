@@ -9,7 +9,7 @@ const METRICHE = {
   residenti: { label: 'Residenti 2021', key: 'residenti_2021', id: 'id_residenti', unit: 'abitanti per cella', lo: [236, 236, 255], hi: [84, 27, 198], rampa: ['#ECECFF', '#8E7DF6', '#541BC6'] },
   ricettive: { label: 'Ricettività a 15 min', key: 'ricettive_15min', id: 'id_ricettive', unit: 'strutture raggiungibili a piedi in 15 min', lo: [224, 249, 241], hi: [24, 72, 62], rampa: ['#E0F9F1', '#5CE0C3', '#18483E'] }
 };
-let cache, metrica = 'residenti', selezionata = null, vista3d = false, gl = null;
+let cache, metrica = 'residenti', selezionata = null, vista3d = false, gl = null, climaMetrica = 'dT';
 
 async function carica() {
   if (cache) return cache;
@@ -119,7 +119,7 @@ function applicaVista(d, anima = true) {
 /* ---------- pannelli ---------- */
 function dettaglio({ geo, centro }) {
   const f = geo.features.find(x => x.properties.cella === (selezionata || centro)), p = f.properties, m = METRICHE[metrica];
-  return '<b>' + it(p[m.key]) + '</b><small>' + m.label + ', ' + m.unit + '</small><small>Cella H3 r8 ' + esc(p.cella) + (p.centro ? ' (contiene Piazza Risorgimento)' : '') + ' · valore di cella, circa 0,8 km² · id Demo Builder ' + esc(p[m.id]) + '</small>';
+  return '<small class="ov-k">Cella selezionata</small><b>' + it(p[m.key]) + '</b><small>' + m.label + ', ' + m.unit + '</small><small class="ov-id">H3 r8 ' + esc(p.cella) + (p.centro ? ' · contiene Piazza Risorgimento' : '') + '<br>valore di cella, circa 0,8 km² · id ' + esc(p[m.id]) + '</small>';
 }
 function legenda({ estremi }) {
   const m = METRICHE[metrica], e = estremi[metrica];
@@ -128,24 +128,70 @@ function legenda({ estremi }) {
 function schede({ ctx }) {
   return ctx.schede.map(s => '<div class="sheet-item"><h3>' + esc(s.titolo) + '</h3><span class="badge chorema">Chorema</span><p>' + esc(s.valore) + '</p><small>' + esc(s.id) + ' · verificato il ' + esc(s.data_verifica) + '</small></div>').join('');
 }
-function rioni({ ctx }) {
-  const r = ctx.rioni, max = Math.max(...Object.values(r).map(x => Math.abs(x.variazione_1991_2021_pct)));
-  return Object.entries(r).map(([n, x]) => '<div class="rione-row"><span>' + esc(n) + '</span><div class="track" title="Variazione dei residenti 1991-2021"><span style="width:' + (100 * Math.abs(x.variazione_1991_2021_pct) / max).toFixed(1) + '%"></span></div><b>' + it(x.variazione_1991_2021_pct, 2) + '%</b></div>').join('');
-}
+const cardHead = (t, s) => '<div class="card-head"><div><h2>' + t + '</h2><p>' + s + '</p></div><span class="badge chorema">Chorema</span></div>';
 const seg = (nome, attr, voci, attivo) => '<div class="seg" role="group" aria-label="' + nome + '">' + voci.map(([k, l]) => '<button ' + attr + '="' + k + '" aria-pressed="' + (k === attivo) + '">' + l + '</button>').join('') + '</div>';
+
+function aPiedi({ ctx }) {
+  return '<div class="pd-key"><span><i class="k15"></i>a 15 minuti</span><span><i class="k30"></i>a 30 minuti</span></div>' + ctx.numeri.a_piedi.map(r =>
+    '<div class="pd-row" title="' + esc(r.nota) + '"><div class="pd-lab"><b>' + esc(r.voce) + '</b><small>' + esc(r.id) + '</small></div><div class="pd-num">' + it(r.m15) + '</div>' +
+    '<div class="pd-bars"><span class="pd-30"></span><span class="pd-15" style="width:' + (100 * r.m15 / r.m30).toFixed(1) + '%"></span></div><div class="pd-30n">' + it(r.m30) + '</div></div>').join('');
+}
+function caldoAria({ ctx }) {
+  const n = ctx.numeri;
+  const caldo = n.caldo.map(c => '<div class="stat"><b>' + it(c.valore, 1) + '</b><span>' + esc(c.unita) + '</span><small>' + esc(c.voce) + '</small></div>').join('');
+  const mx = Math.max(...n.aria.map(a => a.valore / a.oms)) * 1.12; // lunghezza della barra = multiplo del limite OMS
+  const aria = n.aria.map(a => { return '<div class="aq-row"><span class="aq-lab">' + esc(a.voce) + '</span><div class="aq-track"><i style="width:' + (100 * a.valore / a.oms / mx).toFixed(1) + '%"></i><u style="left:' + (100 / mx).toFixed(1) + '%" title="Limite OMS 2021: ' + it(a.oms) + ' µg/m³"></u></div><span class="aq-val">' + it(a.valore, 1) + ' <small>µg/m³</small></span><span class="aq-x">×' + it(a.rapporto_oms, 1) + ' il limite OMS</span></div>'; }).join('');
+  return '<h3 class="sub">Caldo <small>' + esc(n.caldo_fonte) + ' · ' + esc(n.caldo_id) + '</small></h3><div class="stats">' + caldo + '</div>' +
+    '<h3 class="sub">Aria <small>' + esc(n.aria_fonte) + ' · ' + esc(n.aria_id) + ' · la barra è il multiplo del limite OMS, la linea è il limite</small></h3>' + aria +
+    '<p class="verde">Verde urbano <b>' + it(n.verde.verde_urbano_pct, 1) + '%</b> · tessuto urbano <b>' + it(n.verde.tessuto_urbano_pct, 1) + '%</b> nell’area di 5 km <small>' + esc(n.verde.id) + '</small></p>';
+}
+const COL_SSP = { 'SSP2-4.5': '#328170', 'SSP5-8.5': '#6422E8' };
+function climaSvg({ ctx }) {
+  const c = ctx.numeri.clima, k = climaMetrica, dec = k === 'dT' ? 1 : 2;
+  const W = 520, H = 250, L = 42, R = 42, T = 22, B = 34, pw = W - L - R, ph = H - T - B;
+  const max = Math.ceil(Math.max(...Object.values(c.serie).flatMap(s => s[k])) + (k === 'dT' ? 0.4 : 0.2));
+  const x = i => L + 16 + (pw - 32) * i / (c.periodi.length - 1), y = v => T + ph - ph * v / max;
+  let g = '';
+  for (let t = 0; t <= max; t++) g += '<line class="gl" x1="' + L + '" x2="' + (W - R) + '" y1="' + y(t) + '" y2="' + y(t) + '"/><text x="' + (L - 8) + '" y="' + (y(t) + 4) + '" text-anchor="end">' + t + '</text>';
+  c.periodi.forEach((p, i) => { g += '<text x="' + x(i) + '" y="' + (H - 12) + '" text-anchor="middle">' + p + '</text>'; });
+  Object.entries(c.serie).forEach(([nome, s], j) => {
+    const col = COL_SSP[nome], pts = s[k].map((v, i) => x(i).toFixed(1) + ',' + y(v).toFixed(1));
+    g += '<path d="M' + pts.join('L') + '" fill="none" stroke="' + col + '" stroke-width="2.6" stroke-linejoin="round"/>';
+    s[k].forEach((v, i) => { g += '<circle cx="' + x(i).toFixed(1) + '" cy="' + y(v).toFixed(1) + '" r="4.5" fill="#fff" stroke="' + col + '" stroke-width="2.4"><title>' + esc(nome) + ' ' + c.periodi[i] + ': ' + it(v, dec) + ' (' + esc(s.id[i]) + ')</title></circle><text class="vl" x="' + x(i).toFixed(1) + '" y="' + (y(v) + (j === 0 ? 20 : -11)).toFixed(1) + '" text-anchor="middle" fill="' + col + '">' + (k === 'dT' ? '+' : '') + it(v, dec) + '</text>'; });
+  });
+  return '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Proiezioni climatiche per scenario">' + g + '</svg>';
+}
+function clima(d) {
+  const c = d.ctx.numeri.clima;
+  return '<div class="clima-tools">' + seg('Grandezza', 'data-clima', [['dT', 'Aumento di temperatura (°C)'], ['mesi', 'Mesi/anno con Tmax sopra 35 °C']], climaMetrica) +
+    '<span class="clima-key">' + Object.keys(c.serie).map(n => '<span><i style="background:' + COL_SSP[n] + '"></i>' + esc(n) + '</span>').join('') + '</span></div>' +
+    '<div class="clima-chart" id="clima-chart">' + climaSvg(d) + '</div>' +
+    '<p class="note">Modello ' + esc(c.modello) + ', variazione rispetto al ' + esc(c.riferimento) + ' (media di riferimento ' + it(c.baseline_temperatura_media_c, 1) + ' °C, ' + esc(c.baseline_id) + '). I mesi con Tmax sopra 35 °C sono una definizione diversa dai giorni di caldo nella card accanto.</p>';
+}
+function rioni({ ctx }) {
+  const r = ctx.rioni, max = Math.max(...Object.values(r).map(x => x.residenti_1991));
+  return Object.entries(r).map(([n, x]) => '<div class="rr"><div class="rr-top"><b>' + esc(n) + '</b><span class="chip">' + it(x.variazione_1991_2021_pct, 2) + '%</span></div>' +
+    '<div class="rr-bar"><i class="a" style="width:' + (100 * x.residenti_1991 / max).toFixed(1) + '%"></i></div><div class="rr-bar"><i class="b" style="width:' + (100 * x.residenti_2021 / max).toFixed(1) + '%"></i></div>' +
+    '<div class="rr-num"><span>1991: ' + it(x.residenti_1991) + '</span><span>2021: ' + it(x.residenti_2021) + '</span></div></div>').join('') +
+    '<p class="note">Somma delle celle H3 del rione (' + Object.values(r).map(x => x.id.r91 + ' ' + x.id.r21).join(', ') + '); la variazione è calcolata.</p>';
+}
 
 function disegna(el, d) {
   const g = usaGL();
   const mappa = g ? '<div class="ctx-map ctx-gl"><div id="mapa" role="region" aria-label="Mappa interattiva delle 19 celle H3 attorno a Piazza Risorgimento"></div></div>' : '<div class="ctx-map">' + mappaSVG(d) + '</div>';
   const sel = g ? '<label class="sel-cella">Cella <select id="sel-cella">' + d.geo.features.map(f => '<option value="' + f.properties.cella + '">' + esc(f.properties.cella.slice(0, 10)) + (f.properties.centro ? ' (piazza)' : '') + '</option>').join('') + '</select></label>' : '';
-  el.innerHTML = '<div class="ctx-grid"><article class="card"><div class="card-head"><div><h2>Le celle attorno alla piazza</h2><p>19 celle H3 r8 (anello k=2). ' + (g ? 'Passa il mouse o clicca una cella per leggerne il valore.' : 'Seleziona una cella per leggerne il valore.') + '</p></div><span class="badge chorema">Chorema</span></div>' +
+  el.innerHTML = '<article class="card ctx-hero">' + cardHead('Le celle attorno alla piazza', '19 celle H3 r8 (anello k=2). ' + (g ? 'Passa il mouse o clicca una cella per leggerne il valore.' : 'Seleziona una cella per leggerne il valore.')) +
     '<div class="ctx-tools">' + seg('Metrica', 'data-metrica', Object.entries(METRICHE).map(([k, v]) => [k, v.label]), metrica) + (g ? seg('Vista', 'data-vista3d', [['0', 'Piana'], ['1', '3D']], vista3d ? '1' : '0') : '') + sel + '</div>' +
-    mappa + '<div class="ctx-legend" id="legenda">' + legenda(d) + '</div><div class="cell-detail" id="cell-detail">' + dettaglio(d) + '</div></article>' +
-    '<div style="display:grid;gap:18px;align-content:start"><article class="card"><div class="card-head"><div><h2>Residenti nei rioni</h2><p>Variazione 1991-2021, somma delle celle H3 del rione</p></div><span class="badge chorema">Chorema</span></div><div class="rioni">' + rioni(d) + '</div></article>' +
-    '<article class="card"><div class="card-head"><div><h2>Il contesto dell’area</h2><p>Valori Chorema con id e data di verifica</p></div></div><div class="sheet">' + schede(d) + '</div></article></div></div>' +
+    '<div class="ctx-stage">' + mappa + '<div class="cell-overlay" id="cell-detail">' + dettaglio(d) + '</div></div><div class="ctx-legend" id="legenda">' + legenda(d) + '</div></article>' +
+    '<div class="ctx-sections">' +
+    '<article class="card">' + cardHead('A piedi da Piazza Risorgimento', 'Quanto si raggiunge in 15 e in 30 minuti') + '<div class="pd">' + aPiedi(d) + '</div></article>' +
+    '<article class="card">' + cardHead('Caldo e aria oggi', 'Condizioni dell’area, con i limiti OMS') + '<div class="ca">' + caldoAria(d) + '</div></article>' +
+    '<article class="card">' + cardHead('Il clima che verrà', 'Due scenari climatici, quattro periodi') + '<div class="cl">' + clima(d) + '</div></article>' +
+    '<article class="card">' + cardHead('Residenti nei rioni', 'Prati, Borgo e Trevi, 1991 e 2021') + '<div class="rr-wrap">' + rioni(d) + '</div></article></div>' +
+    '<details class="all-values"><summary>Tutti i valori con id e data di verifica</summary><div class="sheet">' + schede(d) + '</div></details>' +
     (V3_URL ? '<article class="card" style="margin-top:18px"><div class="card-head"><div><h2>Studio completo Chorema v3</h2><p>Pagina pubblica incorporata, con mappe e fonti</p></div><span class="badge chorema">Chorema v3</span></div><details class="v3-note"><summary>Apri lo studio incorporato</summary><iframe class="v3-frame" title="Studio Chorema v3" loading="lazy" data-src="' + V3_URL + '"></iframe></details></article>' : '') +
-    '<div class="method-callout">I dati di questa vista sono Chorema (ISTAT, CLC, OvertureMaps, ERA5, CAMS), riaggregati su griglia H3: descrivono il contesto, non i flussi. I flussi del cruscotto restano simulati.</div>';
-  el.querySelector('details')?.addEventListener('toggle', e => { const f = e.target.querySelector('iframe'); if (e.target.open && !f.src) f.src = f.dataset.src; });
+    '<div class="method-callout">I dati di questa vista sono Chorema (ISTAT, CLC, OvertureMaps, ERA5, CAMS, CMIP6), riaggregati su griglia H3: descrivono il contesto, non i flussi. I flussi del cruscotto restano simulati.</div>';
+  el.querySelector('.v3-note')?.addEventListener('toggle', e => { const f = e.target.querySelector('iframe'); if (e.target.open && !f.src) f.src = f.dataset.src; });
   if (g) { el.querySelector('#sel-cella').value = selezionata || d.centro; try { iniziaMappa(d); } catch (e) { gl = null; } }
 }
 
@@ -167,8 +213,9 @@ export async function renderContesto(el, ancora = () => true) {
   el.onkeydown = e => { const h = e.target.closest('[data-cella]'); if (h && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); scegli(d, h.dataset.cella); } };
   el.onchange = e => { if (e.target.id === 'sel-cella') scegli(d, e.target.value); };
   el.onclick = e => {
-    const mb = e.target.closest('[data-metrica]'), v3 = e.target.closest('[data-vista3d]'), h = e.target.closest('[data-cella]');
-    if (mb) {
+    const mb = e.target.closest('[data-metrica]'), v3 = e.target.closest('[data-vista3d]'), h = e.target.closest('[data-cella]'), cb = e.target.closest('[data-clima]');
+    if (cb) { climaMetrica = cb.dataset.clima; aggiornaSeg('data-clima', climaMetrica); el.querySelector('#clima-chart').innerHTML = climaSvg(d); }
+    else if (mb) {
       metrica = mb.dataset.metrica;
       if (gl) { aggiornaSeg('data-metrica', metrica); applicaMetrica(d); el.querySelector('#legenda').innerHTML = legenda(d); el.querySelector('#cell-detail').innerHTML = dettaglio(d); } else disegna(el, d);
     } else if (v3) { vista3d = v3.dataset.vista3d === '1'; aggiornaSeg('data-vista3d', v3.dataset.vista3d); applicaVista(d); }

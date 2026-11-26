@@ -139,5 +139,163 @@
    "fonte": "Chorema (hex, climate, air quality), verificato dal Demo Builder"
   }
  ],
+ "numeri": {
+  "a_piedi": [
+   {
+    "voce": "Strutture ricettive",
+    "m15": 879,
+    "m30": 2007,
+    "id": "D1 D2",
+    "data": "2026-11-20",
+    "nota": "a 15 min: 365 alberghiere e 514 extra-alberghiere"
+   },
+   {
+    "voce": "Luoghi culturali",
+    "m15": 155,
+    "m30": 518,
+    "id": "D12",
+    "data": "2026-11-25",
+    "nota": "a 15 min: 79 musei; a 30 min: 300 musei"
+   },
+   {
+    "voce": "Patrimonio storico e culto",
+    "m15": 151,
+    "m30": 547,
+    "id": "D37 D38",
+    "data": "2026-11-26",
+    "nota": ""
+   },
+   {
+    "voce": "Ristorazione",
+    "m15": 920,
+    "m30": 2343,
+    "id": "D4",
+    "data": "2026-11-20",
+    "nota": "a 15 min: 622 ristoranti e 285 bar"
+   },
+   {
+    "voce": "Fermate bus",
+    "m15": 131,
+    "m30": 331,
+    "id": "D5",
+    "data": "2026-11-20",
+    "nota": "a 30 min anche 5 stazioni ferroviarie"
+   },
+   {
+    "voce": "Farmacie",
+    "m15": 29,
+    "m30": 60,
+    "id": "D39 D40",
+    "data": "2026-11-26",
+    "nota": ""
+   }
+  ],
+  "caldo": [
+   {
+    "voce": "Giorni in ondata di calore",
+    "valore": 13.6,
+    "unita": "giorni/anno"
+   },
+   {
+    "voce": "Giorni con Tmax sopra 35 °C",
+    "valore": 3.2,
+    "unita": "giorni/anno"
+   },
+   {
+    "voce": "Notti tropicali",
+    "valore": 52.5,
+    "unita": "notti/anno"
+   }
+  ],
+  "caldo_id": "D9",
+  "caldo_fonte": "ERA5 2013-2022, area di 5 km",
+  "caldo_data": "2026-11-20",
+  "aria": [
+   {
+    "voce": "PM2.5",
+    "valore": 13.6,
+    "oms": 5,
+    "unita": "µg/m³",
+    "rapporto_oms": 2.7
+   },
+   {
+    "voce": "PM10",
+    "valore": 19.8,
+    "oms": 15,
+    "unita": "µg/m³",
+    "rapporto_oms": 1.3
+   },
+   {
+    "voce": "NO2",
+    "valore": 26.2,
+    "oms": 10,
+    "unita": "µg/m³",
+    "rapporto_oms": 2.6
+   }
+  ],
+  "aria_id": "D10",
+  "aria_fonte": "CAMS 2013-2022, area di 5 km; limiti OMS 2021",
+  "aria_data": "2026-11-20",
+  "verde": {
+   "verde_urbano_pct": 15.7,
+   "tessuto_urbano_pct": 69.2,
+   "id": "D11",
+   "data": "2026-11-20"
+  },
+  "clima": {
+   "modello": "ACCESS-CM2",
+   "riferimento": "1991-2020",
+   "baseline_temperatura_media_c": 15.9,
+   "baseline_id": "D7",
+   "periodi": [
+    "2021-2040",
+    "2041-2060",
+    "2061-2080",
+    "2081-2100"
+   ],
+   "serie": {
+    "SSP2-4.5": {
+     "dT": [
+      1.3,
+      2.4,
+      3.0,
+      3.5
+     ],
+     "mesi": [
+      0.2,
+      0.8,
+      1.37,
+      1.63
+     ],
+     "id": [
+      "D28",
+      "D8",
+      "D29",
+      "D30"
+     ]
+    },
+    "SSP5-8.5": {
+     "dT": [
+      1.4,
+      2.4,
+      4.1,
+      6.0
+     ],
+     "mesi": [
+      0.23,
+      0.87,
+      1.93,
+      3.47
+     ],
+     "id": [
+      "D31",
+      "D32",
+      "D33",
+      "D8"
+     ]
+    }
+   }
+  }
+ },
  "variazione_cella_2001_2021_pct": -10.48
 }
