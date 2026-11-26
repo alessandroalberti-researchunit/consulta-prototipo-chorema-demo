@@ -85,3 +85,12 @@ footer,footer strong,footer p,.timeline-ticks span,.evidence-index,.heat-hour,.h
 @media(max-width:700px){.ctx-hero .ctx-gl #mapa{height:440px}.cell-overlay{position:static;margin:10px 16px 0;max-width:none}.aq-row{grid-template-columns:48px 1fr 80px}.aq-x{grid-column:1/-1}.stats{grid-template-columns:1fr}}
 
 .cell-overlay .ov-split{margin-top:3px}.cell-overlay .ov-split b{display:inline;font-size:13px;line-height:inherit;letter-spacing:0;margin:0;color:#8A5A00}
+
+/* confronto tra rioni */
+.cmp{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;padding:6px 20px 8px}
+.cr h3{margin:4px 0 10px;font-size:14px;font-weight:600}.cr h3 small{display:block;font-weight:400;color:#65647A;font-size:11px;margin-top:2px}
+.cr-row{display:grid;grid-template-columns:54px 1fr 70px;gap:10px;align-items:center;margin:10px 0;font-size:12px}
+.cr-track{position:relative;height:14px;background:#F7F6FF;border-radius:7px}.cr-track i{display:block;height:100%;border-radius:7px}.cr-track u{position:absolute;top:-4px;width:2px;height:22px;background:#272735;text-decoration:none}
+.cr-row b{text-align:right;font-size:14px}
+.cmp-note{padding:0 20px 16px;margin:0}
+@media(max-width:1000px){.cmp{grid-template-columns:1fr}}

@@ -5,12 +5,14 @@
    "residenti_2021": 19946.3367,
    "variazione_1991_2021_pct": -25.9,
    "ricettive_15min_media_per_cella": 903.7019,
+   "trasporti_15min_media_per_cella": 121.2584,
    "cultura_15min_media_per_cella": 176.5706,
    "no2_ug_m3": 27.399,
    "id": {
     "r91": "D13",
     "r21": "D14",
     "ric": "D19",
+    "tr": "D106",
     "cul": "D22",
     "no2": "D25"
    }
@@ -20,12 +22,14 @@
    "residenti_2021": 4715.6704,
    "variazione_1991_2021_pct": -22.13,
    "ricettive_15min_media_per_cella": 601.0,
+   "trasporti_15min_media_per_cella": 65.0,
    "cultura_15min_media_per_cella": 162.0,
    "no2_ug_m3": 27.392,
    "id": {
     "r91": "D15",
     "r21": "D16",
     "ric": "D20",
+    "tr": "D107",
     "cul": "D23",
     "no2": "D26"
    }
@@ -35,12 +39,14 @@
    "residenti_2021": 6741.9845,
    "variazione_1991_2021_pct": -23.39,
    "ricettive_15min_media_per_cella": 1060.5725,
+   "trasporti_15min_media_per_cella": 90.3883,
    "cultura_15min_media_per_cella": 295.6609,
    "no2_ug_m3": 27.878,
    "id": {
     "r91": "D17",
     "r21": "D18",
     "ric": "D21",
+    "tr": "D108",
     "cul": "D24",
     "no2": "D27"
    }

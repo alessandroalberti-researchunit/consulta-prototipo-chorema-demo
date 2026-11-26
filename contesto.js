@@ -4,11 +4,11 @@ const V3_URL = ''; // URL di una pagina pubblica Chorema da incorporare (iframe)
 // Base cartografica: OpenFreeMap (stile Positron, vettoriale, gratuito, senza chiave, uso commerciale ammesso; dati © OpenMapTiles, © OpenStreetMap contributors). Sostituibile con qualsiasi stile MapLibre.
 const STILE_URL = 'https://tiles.openfreemap.org/styles/positron';
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const it = (n, d = 0) => new Intl.NumberFormat('it-IT', { minimumFractionDigits: d, maximumFractionDigits: d }).format(n);
+const it = (n, d = 0) => new Intl.NumberFormat('it-IT', { useGrouping: 'always', minimumFractionDigits: d, maximumFractionDigits: d }).format(n);
 const METRICHE = {
   residenti: { label: 'Residenti 2021', key: 'residenti_2021', id: 'id_residenti', unit: 'abitanti per cella', lo: [236, 236, 255], hi: [84, 27, 198], rampa: ['#ECECFF', '#8E7DF6', '#541BC6'] },
   ricettive: { label: 'Ricettività a 15 min', key: 'ricettive_15min', id: 'id_ricettive', unit: 'strutture raggiungibili a piedi in 15 min', lo: [224, 249, 241], hi: [24, 72, 62], rampa: ['#E0F9F1', '#5CE0C3', '#18483E'] },
-  trasporti: { label: 'Trasporti a 15 min', key: 'trasporti_15min', id: 'id_trasporti', unit: 'fermate bus e stazioni raggiungibili a piedi in 15 min', lo: [255, 244, 214], hi: [138, 90, 0], rampa: ['#FFF4D6', '#F0B429', '#8A5A00'], split: ['bus_15min', 'stazioni_15min'] }
+  trasporti: { label: 'Trasporti a 15 min', key: 'trasporti_15min', id: 'id_trasporti', unit: 'infrastrutture di trasporto raggiungibili a piedi in 15 min (fermate bus e stazioni)', lo: [255, 244, 214], hi: [138, 90, 0], rampa: ['#FFF4D6', '#F0B429', '#8A5A00'], split: ['bus_15min', 'stazioni_15min'] }
 };
 let cache, metrica = 'residenti', selezionata = null, vista3d = false, gl = null, climaMetrica = 'dT';
 
@@ -177,6 +177,20 @@ function rioni({ ctx }) {
     '<p class="note">Somma delle celle H3 del rione (' + Object.values(r).map(x => x.id.r91 + ' ' + x.id.r21).join(', ') + '); la variazione è calcolata.</p>';
 }
 
+function confrontoRioni({ ctx, geo }) {
+  const r = ctx.rioni, nomi = Object.keys(r), c = geo.features.find(f => f.properties.centro).properties;
+  const pan = [
+    { t: 'Residenti 2021', b: 'totale del rione', v: x => x.residenti_2021, k: 'r21', col: '#6422E8', rif: null, dec: 0 },
+    { t: 'Ricettività a 15 min', b: 'media per cella', v: x => x.ricettive_15min_media_per_cella, k: 'ric', col: '#328170', rif: c.ricettive_15min, dec: 1 },
+    { t: 'Trasporti a 15 min', b: 'media per cella', v: x => x.trasporti_15min_media_per_cella, k: 'tr', col: '#B7791F', rif: c.trasporti_15min, dec: 1 }
+  ];
+  return pan.map(p => {
+    const vals = nomi.map(n => p.v(r[n])), mx = Math.max(...vals, p.rif || 0) * 1.08;
+    const righe = nomi.map((n, i) => '<div class="cr-row"><span>' + esc(n) + '</span><div class="cr-track"><i style="width:' + (100 * vals[i] / mx).toFixed(1) + '%;background:' + p.col + '"></i>' + (p.rif ? '<u style="left:' + (100 * p.rif / mx).toFixed(1) + '%" title="Cella della piazza: ' + it(p.rif) + '"></u>' : '') + '</div><b>' + it(vals[i], p.dec) + '</b></div>').join('');
+    return '<div class="cr"><h3>' + p.t + ' <small>' + p.b + '</small></h3>' + righe + '<p class="note">' + (p.rif ? 'La linea è la cella della piazza (' + it(p.rif) + '). ' : 'Non confrontabile con la cella della piazza. ') + esc(nomi.map(n => r[n].id[p.k]).join(' ')) + '</p></div>';
+  }).join('');
+}
+
 function disegna(el, d) {
   const g = usaGL();
   const mappa = g ? '<div class="ctx-map ctx-gl"><div id="mapa" role="region" aria-label="Mappa interattiva delle 19 celle H3 attorno a Piazza Risorgimento"></div></div>' : '<div class="ctx-map">' + mappaSVG(d) + '</div>';
@@ -189,6 +203,7 @@ function disegna(el, d) {
     '<article class="card">' + cardHead('Caldo e aria oggi', 'Condizioni dell’area, con i limiti OMS') + '<div class="ca">' + caldoAria(d) + '</div></article>' +
     '<article class="card">' + cardHead('Il clima che verrà', 'Due scenari climatici, quattro periodi') + '<div class="cl">' + clima(d) + '</div></article>' +
     '<article class="card">' + cardHead('Residenti nei rioni', 'Prati, Borgo e Trevi, 1991 e 2021') + '<div class="rr-wrap">' + rioni(d) + '</div></article></div>' +
+    '<article class="card" style="margin-bottom:18px">' + cardHead('Confronto tra rioni', 'Gli indicatori della mappa per Prati, Borgo e Trevi') + '<div class="cmp">' + confrontoRioni(d) + '</div><p class="note cmp-note">I residenti sono il totale del rione; ricettività e trasporti sono la media per cella H3. Per Borgo i valori coincidono con quelli di una sola cella (881e805051fffff).</p></article>' +
     '<details class="all-values"><summary>Tutti i valori con id e data di verifica</summary><div class="sheet">' + schede(d) + '</div></details>' +
     (V3_URL ? '<article class="card" style="margin-top:18px"><div class="card-head"><div><h2>Studio completo Chorema v3</h2><p>Pagina pubblica incorporata, con mappe e fonti</p></div><span class="badge chorema">Chorema v3</span></div><details class="v3-note"><summary>Apri lo studio incorporato</summary><iframe class="v3-frame" title="Studio Chorema v3" loading="lazy" data-src="' + V3_URL + '"></iframe></details></article>' : '') +
     '<div class="method-callout">I dati di questa vista sono Chorema (ISTAT, CLC, OvertureMaps, ERA5, CAMS, CMIP6), riaggregati su griglia H3: descrivono il contesto, non i flussi. I flussi del cruscotto restano simulati.</div>';
