@@ -1,0 +1,143 @@
+{
+ "rioni": {
+  "Prati": {
+   "residenti_1991": 26916.5217,
+   "residenti_2021": 19946.3367,
+   "variazione_1991_2021_pct": -25.9,
+   "ricettive_15min_media_per_cella": 903.7019,
+   "cultura_15min_media_per_cella": 176.5706,
+   "no2_ug_m3": 27.399,
+   "id": {
+    "r91": "D13",
+    "r21": "D14",
+    "ric": "D19",
+    "cul": "D22",
+    "no2": "D25"
+   }
+  },
+  "Borgo": {
+   "residenti_1991": 6055.777,
+   "residenti_2021": 4715.6704,
+   "variazione_1991_2021_pct": -22.13,
+   "ricettive_15min_media_per_cella": 601.0,
+   "cultura_15min_media_per_cella": 162.0,
+   "no2_ug_m3": 27.392,
+   "id": {
+    "r91": "D15",
+    "r21": "D16",
+    "ric": "D20",
+    "cul": "D23",
+    "no2": "D26"
+   }
+  },
+  "Trevi": {
+   "residenti_1991": 8800.2791,
+   "residenti_2021": 6741.9845,
+   "variazione_1991_2021_pct": -23.39,
+   "ricettive_15min_media_per_cella": 1060.5725,
+   "cultura_15min_media_per_cella": 295.6609,
+   "no2_ug_m3": 27.878,
+   "id": {
+    "r91": "D17",
+    "r21": "D18",
+    "ric": "D21",
+    "cul": "D24",
+    "no2": "D27"
+   }
+  }
+ },
+ "schede": [
+  {
+   "titolo": "Ricettività a piedi",
+   "valore": "15 min: 879 strutture (365 alberghiere, 514 extra-alberghiere); 30 min: 2.007",
+   "id": "D1 D2",
+   "data_verifica": "2026-11-20",
+   "fonte": "Chorema (hex, climate, air quality), verificato dal Demo Builder"
+  },
+  {
+   "titolo": "Cultura a piedi",
+   "valore": "15 min: 155 luoghi (musei 79); 30 min: 518 (musei 300)",
+   "id": "D12",
+   "data_verifica": "2026-11-25",
+   "fonte": "Chorema (hex, climate, air quality), verificato dal Demo Builder"
+  },
+  {
+   "titolo": "Patrimonio storico e culto a piedi",
+   "valore": "15 min: 151; 30 min: 547",
+   "id": "D37 D38",
+   "data_verifica": "2026-11-26",
+   "fonte": "Chorema (hex, climate, air quality), verificato dal Demo Builder"
+  },
+  {
+   "titolo": "Ristorazione a piedi",
+   "valore": "15 min: 920 (ristoranti 622, bar 285); 30 min: 2.343",
+   "id": "D4",
+   "data_verifica": "2026-11-20",
+   "fonte": "Chorema (hex, climate, air quality), verificato dal Demo Builder"
+  },
+  {
+   "titolo": "Trasporti a piedi",
+   "valore": "15 min: 131 fermate bus; 30 min: 331 fermate bus e 5 stazioni ferroviarie",
+   "id": "D5",
+   "data_verifica": "2026-11-20",
+   "fonte": "Chorema (hex, climate, air quality), verificato dal Demo Builder"
+  },
+  {
+   "titolo": "Farmacie a piedi",
+   "valore": "15 min: 29; 30 min: 60",
+   "id": "D39 D40",
+   "data_verifica": "2026-11-26",
+   "fonte": "Chorema (hex, climate, air quality), verificato dal Demo Builder"
+  },
+  {
+   "titolo": "Stress termico ERA5 2013-2022 (5 km)",
+   "valore": "ondata di calore 13,6 gg/anno; Tmax>35 3,2 gg/anno; notti tropicali 52,5 gg/anno",
+   "id": "D9",
+   "data_verifica": "2026-11-20",
+   "fonte": "Chorema (hex, climate, air quality), verificato dal Demo Builder"
+  },
+  {
+   "titolo": "Qualità dell'aria CAMS 2013-2022 (5 km)",
+   "valore": "PM2.5 13,6 µg/m³ (OMS 5); PM10 19,8 (OMS 15); NO2 26,2 (OMS 10)",
+   "id": "D10",
+   "data_verifica": "2026-11-20",
+   "fonte": "Chorema (hex, climate, air quality), verificato dal Demo Builder"
+  },
+  {
+   "titolo": "Verde e tessuto urbano (5 km)",
+   "valore": "verde urbano 15,7%; tessuto urbano 69,2%",
+   "id": "D11",
+   "data_verifica": "2026-11-20",
+   "fonte": "Chorema (hex, climate, air quality), verificato dal Demo Builder"
+  },
+  {
+   "titolo": "Baseline climatica ERA5 1991-2020",
+   "valore": "15,9 C; 0,00 mesi/anno con Tmax>35; risk score 22,4/100",
+   "id": "D7",
+   "data_verifica": "2026-11-20",
+   "fonte": "Chorema (hex, climate, air quality), verificato dal Demo Builder"
+  },
+  {
+   "titolo": "Proiezione CMIP6 ACCESS-CM2 SSP2-4.5 2041-2060",
+   "valore": "+2,4 C; 0,80 mesi/anno con Tmax>35",
+   "id": "D8",
+   "data_verifica": "2026-11-20",
+   "fonte": "Chorema (hex, climate, air quality), verificato dal Demo Builder"
+  },
+  {
+   "titolo": "Proiezione CMIP6 ACCESS-CM2 SSP5-8.5 2081-2100",
+   "valore": "+6,0 C; 3,47 mesi/anno con Tmax>35",
+   "id": "D8",
+   "data_verifica": "2026-11-20",
+   "fonte": "Chorema (hex, climate, air quality), verificato dal Demo Builder"
+  },
+  {
+   "titolo": "Popolazione residente 2021 (v3)",
+   "valore": "cella 881e805059fffff: 13.007 abitanti; comune di Roma: 2.757.601 abitanti (riaggregato da celle H3, non coincide con i totali ISTAT)",
+   "id": "D85 D86",
+   "data_verifica": "2026-11-26",
+   "fonte": "Chorema (hex, climate, air quality), verificato dal Demo Builder"
+  }
+ ],
+ "variazione_cella_2001_2021_pct": -10.48
+}

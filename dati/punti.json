@@ -1,0 +1,26 @@
+[
+ {
+  "id": "piazza",
+  "nome": "Piazza Risorgimento",
+  "lat": 41.906081,
+  "lon": 12.457762,
+  "coordinate": "da progetto",
+  "cella": "881e805059fffff"
+ },
+ {
+  "id": "via",
+  "nome": "Via Ottaviano",
+  "lat": 41.9072,
+  "lon": 12.459,
+  "coordinate": "STIMATE, da correggere da Sensoworks",
+  "cella": "881e805059fffff"
+ },
+ {
+  "id": "metro",
+  "nome": "Accesso Ottaviano",
+  "lat": 41.9086,
+  "lon": 12.4608,
+  "coordinate": "STIMATE, da correggere da Sensoworks",
+  "cella": "881e805059fffff"
+ }
+]
